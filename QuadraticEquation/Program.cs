@@ -2,60 +2,59 @@ using System.Globalization;
 
 namespace QuadraticEquation
 {
-    static class Program
+    public static class Program
     {
-        private const double Epsilon = 1e-9;
-
-        static void Main()
+        public static void Main()
         {
-            Console.WriteLine("Решение квадратного уравнения a*x^2 + b*x + c = 0");
+            Run(Console.In, Console.Out);
+        }
 
-            double a = ReadCoefficient("a");
-            double b = ReadCoefficient("b");
-            double c = ReadCoefficient("c");
+        public static void Run(TextReader input, TextWriter output)
+        {
+            output.WriteLine("Решение квадратного уравнения a*x^2 + b*x + c = 0");
 
-            if (Math.Abs(a) < Epsilon)
+            double a = ReadCoefficient("a", input, output);
+            double b = ReadCoefficient("b", input, output);
+            double c = ReadCoefficient("c", input, output);
+
+            if (QuadraticSolver.IsZero(a))
             {
-                Console.WriteLine("Коэффициент a не должен быть равен 0");
+                output.WriteLine("Коэффициент a не должен быть равен 0");
                 return;
             }
 
-            double discriminant = b * b - 4 * a * c;
-            Console.WriteLine("Дискриминант D = " + discriminant);
+            output.WriteLine("Дискриминант D = " + QuadraticSolver.Discriminant(a, b, c));
 
-            if (discriminant < -Epsilon)
+            double[] roots = QuadraticSolver.Solve(a, b, c);
+            switch (roots.Length)
             {
-                Console.WriteLine("Действительных корней нет");
-            }
-            else if (Math.Abs(discriminant) < Epsilon)
-            {
-                double x = -b / (2 * a);
-                Console.WriteLine("Корень: x = " + x);
-            }
-            else
-            {
-                double sqrtD = Math.Sqrt(discriminant);
-                double x1 = (-b + sqrtD) / (2 * a);
-                double x2 = (-b - sqrtD) / (2 * a);
-                Console.WriteLine("Корни: x1 = " + x1 + ", x2 = " + x2);
+                case 0:
+                    output.WriteLine("Действительных корней нет");
+                    break;
+                case 1:
+                    output.WriteLine("Корень: x = " + roots[0]);
+                    break;
+                default:
+                    output.WriteLine("Корни: x1 = " + roots[0] + ", x2 = " + roots[1]);
+                    break;
             }
         }
 
-        static double ReadCoefficient(string name)
+        public static double ReadCoefficient(string name, TextReader input, TextWriter output)
         {
             while (true)
             {
-                Console.Write("Введите коэффициент " + name + ": ");
-                string? input = Console.ReadLine();
-                if (input == null)
+                output.Write("Введите коэффициент " + name + ": ");
+                string? line = input.ReadLine();
+                if (line == null)
                 {
                     throw new InvalidOperationException("Ввод данных прерван");
                 }
-                if (double.TryParse(input, NumberStyles.Float, CultureInfo.CurrentCulture, out double value))
+                if (double.TryParse(line, NumberStyles.Float, CultureInfo.CurrentCulture, out double value))
                 {
                     return value;
                 }
-                Console.WriteLine("Ошибка: введите число");
+                output.WriteLine("Ошибка: введите число");
             }
         }
     }

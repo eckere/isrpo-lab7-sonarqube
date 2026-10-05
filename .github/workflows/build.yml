@@ -42,6 +42,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"eckere_isrpo-lab7-sonarqube" /o:"eckere" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.exclusions="appendix/**"
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"eckere_isrpo-lab7-sonarqube" /o:"eckere" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.exclusions="appendix/**" /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
           dotnet build
+          dotnet test --no-build --collect:"XPlat Code Coverage;Format=opencover"
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
