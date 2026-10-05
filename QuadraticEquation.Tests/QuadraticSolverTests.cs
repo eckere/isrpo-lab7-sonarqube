@@ -5,13 +5,17 @@ namespace QuadraticEquation.Tests
         [Fact]
         public void Solve_PositiveDiscriminant_ReturnsTwoRoots()
         {
-            Assert.Equal(new[] { 2.0, 1.0 }, QuadraticSolver.Solve(1, -3, 2));
+            double[] roots = QuadraticSolver.Solve(1, -3, 2);
+            Assert.Equal(2, roots.Length);
+            Assert.Equal(2.0, roots[0]);
+            Assert.Equal(1.0, roots[1]);
         }
 
         [Fact]
         public void Solve_ZeroDiscriminant_ReturnsOneRoot()
         {
-            Assert.Equal(new[] { -1.0 }, QuadraticSolver.Solve(1, 2, 1));
+            double root = Assert.Single(QuadraticSolver.Solve(1, 2, 1));
+            Assert.Equal(-1.0, root);
         }
 
         [Fact]
